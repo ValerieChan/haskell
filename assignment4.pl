@@ -11,7 +11,8 @@ write('What do you want to tell me?'),
 printSentence(Input):- write(Input).
 answer(Input, X):- transform(Input, X).
 
-% Pattern matches to see which word pattern is being used:
+% Transform pattern matches to see which word pattern is being used, searches for appropriate
+% replacements, adds a qm to the end and returns the new list:
 transform([i, want, to |T], [why, do, you, want, to |Y]):-transform(T,Y).
 transform([i, X , about |T], [have, you, ever, Z, about, T ,before, qm]):- tensechange(X, Z).
 %a more specific reply for feelings.
@@ -46,7 +47,7 @@ tensechange(A, X):-(sub_atom(A, _, 1, 0, e) -> atom_concat(A, d, X); atom_concat
 % examples of [i, _, about, _].
 :- transform([i, fantisise, about, fast, cars], [have, you, ever, fantisised, about, [fast, cars], before, qm]).
 :- transform([i, dream, about, prolog],[have, you, ever, dreamed, about, [prolog], before, qm]).
-% This example does not go backwards as the predicate does not know whether it should take
+% This example does not go backwards as the tensechange predicate does not know whether it should take
 % d or ed off the end. 
 
 % The following examples will reversly produce an input list. I think this is because it is constructed in such a way\
@@ -55,12 +56,22 @@ tensechange(A, X):-(sub_atom(A, _, 1, 0, e) -> atom_concat(A, d, X); atom_concat
 % examples of [i, feel, _, about _].
 :- transform([i, feel, happy, about, my, brother],[what, makes, you, feel, [happy, about, your, brother, qm]]).
 :- transform([i, feel, bad, about, harambe], [what, makes, you, feel, [bad, about, harambe, qm]]).
+% transform(X, [what, makes, you, feel, [bad, about, harambe, qm]]).--just run this to see a reversal
 
-% examples of [i, _, _].
+% exampless of [i, _, _].
 :- transform([i,want,to,cry], [why, do, you, want, to, cry, qm]).
 :- transform([i, want, to , go , to, france], [why, do, you, want, to, go, to, france, qm]).
 :- transform([i, feel, sad], [what, makes, you, feel,[ sad, qm]]).
+:- transform([i, like, his, dog], [why, do, you, like, his, dog, qm]).%other person example
+:- transform([i, like, my, cat], [why, do, you, like, your, cat, qm]). % my/your change example
+% transform(X, [what, makes, you, feel,[ sad, qm]]).--just run this to see a reversal
+
+% examples of [i, know, i, am _].
+:-transform([i, know, i, am, insecure], [[are, you, sure, you, know, that, you, are], insecure, qm]).
+:-transform([i, know, i, am, really, cool], [[are, you, sure, you, know, that, you, are], really, cool, qm]).
+%transform(X, [[are, you, sure, you, know, that, you, are], really, cool, qm]).--just run this to see a reversal
 
 % examples of [i, am, _]:
 :- transform([i,am, harambe], [why, are, you, harambe, qm]).
 :- transform([i, am, happy], [why, are, you, happy, qm]).
+%transform(X, [why, are, you, happy, qm]).--just run this to see a reversal
